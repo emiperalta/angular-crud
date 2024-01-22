@@ -14,4 +14,8 @@ export class DataService {
   addEmployee(payload: any) {
     return this.httpClient.post('/api/employees', payload);
   }
+
+  deleteEmployee(id: number) {
+    return this.httpClient.delete(`/api/employees/${id}`);
+  }
 }

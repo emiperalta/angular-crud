@@ -37,4 +37,10 @@ export class EmployeesComponent {
         this.getEmployees();
       });
   }
+
+  onDelete(id: number) {
+    this._dataService.deleteEmployee(id).subscribe((res) => {
+      this.getEmployees();
+    });
+  }
 }

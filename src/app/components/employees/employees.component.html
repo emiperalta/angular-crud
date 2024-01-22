@@ -32,6 +32,7 @@
         <th>ID</th>
         <th>Name</th>
         <th>Age</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody>
@@ -40,6 +41,11 @@
         <th>{{ employee.id }}</th>
         <td>{{ employee.name }}</td>
         <td>{{ employee.age }}</td>
+        <td>
+          <button class="btn btn-danger" (click)="onDelete(employee.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+        </td>
       </tr>
       }
     </tbody>
