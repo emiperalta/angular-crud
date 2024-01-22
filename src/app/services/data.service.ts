@@ -10,4 +10,8 @@ export class DataService {
   getEmployees() {
     return this.httpClient.get('/api/employees');
   }
+
+  addEmployee(payload: any) {
+    return this.httpClient.post('/api/employees', payload);
+  }
 }
