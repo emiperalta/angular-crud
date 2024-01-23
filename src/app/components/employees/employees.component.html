@@ -1,31 +1,38 @@
-<div class="container pt-3">
-  <form class="pb-3" [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
-    <div class="form-group">
-      <label for="name">Name</label>
+<div class="container-sm pt-4">
+  <form
+    class="pb-3 row g-3 align-items-center"
+    [formGroup]="employeeForm"
+    (ngSubmit)="onSubmit()"
+  >
+    <input type="hidden" name="id" formControlName="id" />
+    <div class="col-md-3">
       <input
         autocomplete="name"
         class="form-control"
         formControlName="name"
         id="name"
         name="name"
+        placeholder="Name"
         type="text"
       />
     </div>
-    <div class="form-group">
-      <label for="age">Age</label>
+    <div class="col-md-2">
       <input
         class="form-control"
         formControlName="age"
         id="age"
         name="age"
+        placeholder="Age"
         type="number"
       />
     </div>
-    <button class="btn btn-primary mt-2" [disabled]="!employeeForm.valid">
-      Submit
-    </button>
+    <div class="col-md-7"></div>
+    <div class="mt-0 col-md-4">
+      <button class="btn btn-primary mt-2" [disabled]="!employeeForm.valid">
+        @if (employeeForm.controls['id'].value) { Update } @else { Submit }
+      </button>
+    </div>
   </form>
-
   <table class="table table-sm table-striped">
     <thead>
       <tr>
@@ -36,16 +43,23 @@
       </tr>
     </thead>
     <tbody>
-      @for (employee of employees; track employee) {
+      @if (employees.length) { @for (employee of employees; track employee) {
       <tr>
         <th>{{ employee.id }}</th>
         <td>{{ employee.name }}</td>
         <td>{{ employee.age }}</td>
         <td>
-          <button class="btn btn-danger" (click)="onDelete(employee.id)">
+          <button class="btn btn-danger" (click)="onDelete(employee.id!)">
             <i class="bi bi-trash"></i>
           </button>
+          <button class="btn btn-warning" (click)="onEdit(employee.id!)">
+            <i class="bi bi-pencil-square"></i>
+          </button>
         </td>
+      </tr>
+      } } @else {
+      <tr>
+        <td class="text-center" colspan="4">There is no data available!</td>
       </tr>
       }
     </tbody>

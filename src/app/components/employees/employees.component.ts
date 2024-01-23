@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
 import { DataService } from '../../services/data.service';
+import { Employee } from '../../interfaces/Employee';
 
 @Component({
   selector: 'app-employees',
@@ -17,6 +18,7 @@ export class EmployeesComponent {
   employees: any = [];
 
   employeeForm = this._formBuilder.group({
+    id: null,
     name: ['', Validators.required],
     age: ['', Validators.required],
   });
@@ -32,15 +34,38 @@ export class EmployeesComponent {
   }
 
   onSubmit() {
-    if (this.employeeForm.valid)
-      this._dataService.addEmployee(this.employeeForm.value).subscribe((res) => {
-        this.getEmployees();
-      });
+    if (this.employeeForm.controls['id'].value)
+      this._dataService
+        .updateEmployee(
+          Number(this.employeeForm.controls['id'].value),
+          this.employeeForm.value as any,
+        )
+        .subscribe((res) => {
+          this.getEmployees();
+        });
+    else
+      this._dataService
+        .addEmployee(this.employeeForm.value as any)
+        .subscribe((res) => {
+          this.getEmployees();
+        });
+
+    this.employeeForm.reset();
   }
 
   onDelete(id: number) {
     this._dataService.deleteEmployee(id).subscribe((res) => {
       this.getEmployees();
+    });
+  }
+
+  onEdit(id: number) {
+    const employeeToUpdate = this.employees.find((emp: Employee) => emp.id === id);
+
+    this.employeeForm.setValue({
+      id: employeeToUpdate.id,
+      name: employeeToUpdate.name,
+      age: employeeToUpdate.age,
     });
   }
 }
