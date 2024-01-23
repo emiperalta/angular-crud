@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 
 import { Employee } from '../interfaces/Employee';
 
@@ -7,21 +7,21 @@ import { Employee } from '../interfaces/Employee';
   providedIn: 'root',
 })
 export class DataService {
-  constructor(private httpClient: HttpClient) {}
+  private _httpClient = inject(HttpClient);
 
   getEmployees() {
-    return this.httpClient.get('/api/employees');
+    return this._httpClient.get<Employee[]>('/api/employees');
   }
 
   addEmployee(payload: Employee) {
-    return this.httpClient.post('/api/employees', payload);
+    return this._httpClient.post<Employee>('/api/employees', payload);
   }
 
   deleteEmployee(id: number) {
-    return this.httpClient.delete(`/api/employees/${id}`);
+    return this._httpClient.delete(`/api/employees/${id}`);
   }
 
   updateEmployee(id: number, payload: Partial<Employee>) {
-    return this.httpClient.patch(`/api/employees/${id}`, payload);
+    return this._httpClient.patch<Employee>(`/api/employees/${id}`, payload);
   }
 }

@@ -15,12 +15,12 @@ export class EmployeesComponent {
   private _dataService = inject(DataService);
   private _formBuilder = inject(FormBuilder);
 
-  employees: any = [];
+  employees: Employee[] = [];
 
   employeeForm = this._formBuilder.group({
-    id: null,
+    id: <number | null>null,
     name: ['', Validators.required],
-    age: ['', Validators.required],
+    age: [0, [Validators.required, Validators.min(1)]],
   });
 
   constructor() {
@@ -38,16 +38,18 @@ export class EmployeesComponent {
       this._dataService
         .updateEmployee(
           Number(this.employeeForm.controls['id'].value),
-          this.employeeForm.value as any,
+          this.employeeForm.value as Partial<Employee>,
         )
         .subscribe((res) => {
-          this.getEmployees();
+          this.employees = this.employees.map((emp) =>
+            emp.id === res.id ? { ...emp, ...res } : emp,
+          );
         });
     else
       this._dataService
-        .addEmployee(this.employeeForm.value as any)
+        .addEmployee(this.employeeForm.value as Employee)
         .subscribe((res) => {
-          this.getEmployees();
+          this.employees.push(res);
         });
 
     this.employeeForm.reset();
@@ -55,17 +57,18 @@ export class EmployeesComponent {
 
   onDelete(id: number) {
     this._dataService.deleteEmployee(id).subscribe((res) => {
-      this.getEmployees();
+      this.employees = this.employees.filter((emp) => emp.id !== id);
     });
   }
 
   onEdit(id: number) {
-    const employeeToUpdate = this.employees.find((emp: Employee) => emp.id === id);
+    const employeeToUpdate = this.employees.find((emp) => emp.id === id);
 
-    this.employeeForm.setValue({
-      id: employeeToUpdate.id,
-      name: employeeToUpdate.name,
-      age: employeeToUpdate.age,
-    });
+    if (employeeToUpdate)
+      this.employeeForm.setValue({
+        id: employeeToUpdate.id,
+        name: employeeToUpdate.name,
+        age: employeeToUpdate.age,
+      });
   }
 }
